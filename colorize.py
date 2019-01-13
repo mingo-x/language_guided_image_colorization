@@ -1,7 +1,6 @@
 import argparse
 import cv2
 import math
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pickle
@@ -13,7 +12,6 @@ import torch.nn as nn
 from torch.utils import data
 import torchvision.transforms as transforms
 
-from autocolorize_resnet import AutocolorizeResnet
 from datasets import CocoStuff164k, imagenetDataset
 from vgg_pretrain import AutocolorizeVGG16Attention
 from vgg_with_segmentation import AutocolorizeVGGWithSeg, AutocolorizeUnetWithSeg, AutocolorizeUnetSegCap, AutocolorizeUnetSegCapV2, \
