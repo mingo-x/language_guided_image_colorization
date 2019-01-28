@@ -9,7 +9,7 @@ import utils
 _AUC_THRESHOLD = 150
 _GT_DIR = '/srv/glusterfs/xieya/image/color/gt'
 _PRIOR_PATH = '/srv/glusterfs/xieya/prior/coco2017_313_soft.npy'
-_LOOKUP = utils.LookupEncode('/home/xieya/colorization-tf/resources/pts_in_hull.npy')
+_LOOKUP = utils.LookupEncode('resources/ab_grid.npy')
 _LOG_FREQ = 100
 
 

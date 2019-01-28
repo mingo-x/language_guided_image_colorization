@@ -462,7 +462,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', '-b', default=32, type=int, help='batch size')
     parser.add_argument('--model_save_folder', '-d', default='/srv/glusterfs/xieya/tmp/', help='prefix of the model save file')
     parser.add_argument('--nclasses', '-nc', type=int, default=313, help='Number of classes.')
-    parser.add_argument('--grid_file', default='/home/xieya/colorization-tf/resources/pts_in_hull.npy', type=str, help='Grid file.')
+    parser.add_argument('--grid_file', default='resources/ab_grid.npy', type=str, help='Grid file.')
     parser.add_argument('--prior_file', default='/home/xieya/colorization-tf/resources/prior_probs_smoothed.npy', type=str, help='Priors file.')
     parser.add_argument('--weights', default='', type=str, help='Pretrained weights.')
     parser.add_argument('--pre_weights', default='', type=str, help='Pretrained weights.')

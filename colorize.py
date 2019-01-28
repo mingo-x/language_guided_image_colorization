@@ -401,52 +401,6 @@ def colorize_video(net):
             # if eval_metrics:
                 # psnrs.append(_psnr(gt_rgbs[i], img_dec))
             print(img_cnt)
-        
-
-# def colorize(net):
-#     while True:
-#         i = random.randint(0, len(val_origs) - 1)
-#         img_rgb = val_origs[i: i + 1]
-#         img_lab = np.array([cvrgb2lab(img) for img in img_rgb])
-
-#         if args.vgg:
-#             input_ = torch.from_numpy(img_lab[:, :, :, 0: 1])
-#         else:
-#             input_ = torch.from_numpy(val_ims[i: i + 1])
-
-#         input_caption_ = val_words[i: i + 1]
-#         input_length_ = val_lengths[i: i + 1]
-
-#         input_caption = Variable(torch.from_numpy(\
-#             input_caption_.astype('int32')).long().cuda())
-#         input_caption_len = torch.from_numpy(\
-#             input_length_.astype('int32')).long().cuda()
-#         input_im = Variable(input_.float().cuda())
-    
-#         img_dec = net_and_decode(net, img_lab, input_im, input_caption, input_caption_len)
-                
-#         word_list = list(input_caption_[0, :input_length_[0]])     
-#         words = '_'.join(vrev.get(w, 'unk') for w in word_list) 
-#         orig_caption = ' '.join(vrev.get(w, 'unk') for w in word_list)
-
-#         cv2.imwrite('%s/%d_rec_%s.jpg'%(img_save_folder, i, words),
-#                     img_dec.astype('uint8'))
-#         print(orig_caption)
-
-#         new_caption = raw_input('New caption?')
-#         new_words = new_caption.strip().split(' ')
-#         new_enc_caption_ = np.zeros_like(input_caption_)
-#         new_input_length_ = np.zeros_like(input_length_)
-#         for j in range(len(new_words)):
-#             new_enc_caption_[0, j] = train_vocab.get(new_words[j], 0)
-#         new_input_length_[0] = len(new_words)
-#         new_input_caption = Variable(torch.from_numpy(new_enc_caption_.astype('int32')).long().cuda())
-#         new_input_caption_len = torch.from_numpy(new_input_length_.astype('int32')).long().cuda()
-#         new_img_dec = net_and_decode(net, img_lab, input_im, new_input_caption, new_input_caption_len)
-#         new_word_list = list(new_enc_caption_[0, : new_input_length_[0]])     
-#         new_words = '_'.join(vrev.get(w, 'unk') for w in new_word_list) 
-#         cv2.imwrite('%s/%d_col_%s.jpg'%(img_save_folder, i, new_words),
-#                     new_img_dec.astype('uint8'))
 
 
 def net_and_decode(net, img_lab, input_im, input_caption, input_caption_len):
@@ -472,7 +426,7 @@ if __name__ == '__main__':
     parser.add_argument('--eval', '-e', default=0, type=int, help='Evaluate metrics.')
     parser.add_argument('--h5_file', default='/srv/glusterfs/xieya/data/coco_colors.h5', help='h5 file which contains everything except features')
     parser.add_argument('--features_file', default='/srv/glusterfs/xieya/data/coco_features.h5', help='h5 file which contains features')
-    parser.add_argument('--vocab_file_name', default='./priors/coco_colors_vocab.p', help='vocabulary file')
+    parser.add_argument('--vocab_file_name', default='resources/coco_colors_vocab.p', help='vocabulary file')
     parser.add_argument('--image_save_folder', '-d', default='', help='prefix of the folders where images are stored')
     parser.add_argument('--model', '-m', default=0, type=int, help='0: vgg+attention')
     parser.add_argument('--weights', '-w', default='', type=str, help='Pretrained weights.')
@@ -493,18 +447,10 @@ if __name__ == '__main__':
     torch.backends.cudnn.benchmark = True
 
     if args.image_save_folder != '':
-        _OUT_DIR = '/srv/glusterfs/xieya/image/color/' + args.image_save_folder
-    # train_vocab = pickle.load(open(args.vocab_file_name, 'r'))
-    # train_vocab_embeddings = pickle.load(open('/srv/glusterfs/xieya/data/w2v_embeddings_colors.p', 'r'))
-
-    # seeds                     
-    # torch.manual_seed(1000)     
-    # torch.cuda.manual_seed(1000)
-    # random.seed(1000)           
-    # np.random.seed(1000)        
+        _OUT_DIR = '/srv/glusterfs/xieya/image/color/' + args.image_save_folder        
 
     # initialize quantized LAB encoder
-    lookup_enc = utils.LookupEncode('/home/xieya/colorization-tf/resources/pts_in_hull.npy')
+    lookup_enc = utils.LookupEncode('resources/ab_grid.npy')
     num_classes = lookup_enc.cc.shape[0]
     cuda_cc = Variable(torch.from_numpy(lookup_enc.cc).float().cuda())
 

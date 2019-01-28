@@ -73,7 +73,7 @@ class _CocoStuff(data.Dataset):
                     self.lens = np.load('/srv/glusterfs/xieya/data/coco_seg/annotations/caption_lengths_comb.npy')
             self.random_cap = random_cap
 
-        grid_file = '/home/xieya/colorization-tf/resources/pts_in_hull.npy'
+        grid_file = 'resources/ab_grid.npy'
         self.lookup_enc = utils.LookupEncode(grid_file)
         self.nn_enc = utils.NNEncode(10, 5., km_filepath=grid_file) 
         self.color_prior = utils.prior_boosting('/srv/glusterfs/xieya/prior/coco2017_313_soft.npy', 1., .5)
@@ -282,7 +282,7 @@ class imagenetDataset(data.Dataset):
     def __init__(
         self, 
         file_path, 
-        grid_file='/home/xieya/colorization-tf/resources/pts_in_hull.npy', 
+        grid_file='resources/ab_grid.npy', 
         training=True, 
         trs1=None, 
         trs2=None, 
@@ -301,7 +301,7 @@ class imagenetDataset(data.Dataset):
         self.trs2 = trs2
         self.return_gt = return_gt
         if self.soft:
-            self.nn_enc = utils.NNEncode(10, 5., km_filepath='/home/xieya/colorization-tf/resources/pts_in_hull.npy')    
+            self.nn_enc = utils.NNEncode(10, 5., km_filepath='resources/ab_grid.npy')    
         self.lookup_enc = utils.LookupEncode(grid_file)
         if self.training:
             print('Training dataset.')
