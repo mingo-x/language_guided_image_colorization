@@ -2,7 +2,9 @@
 
 ## Data Preparation & Set-up
 ### Data sources
-
+@TODO: Add other resources (vocabulary, embedding)
+### Data pre-processing
+### Data paths
 ## Training
 ## Inference
 ## Evaluation
