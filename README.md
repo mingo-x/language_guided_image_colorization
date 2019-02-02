@@ -14,20 +14,19 @@
 * Structure the images and segmentation masks in the following way:
 ```
   DATA_ROOT
-    annotations_224
-      train2017
-        *.png
-      val2017
-        *.png
-    images_224
-      train2017
-        *.png
-      test2017
-        *.png
-      val2017
-        *.png
+    - annotations_224
+      -- train2017
+        --- *.png
+      -- val2017
+        --- *.png
+    - images_224
+      -- train2017
+        --- *.png
+      -- test2017
+        --- *.png
+      -- val2017
+        --- *.png
 ```
-
 Helper functions can be found in data_preprocess.py.
 
 ## Training
