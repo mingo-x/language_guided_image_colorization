@@ -12,6 +12,7 @@
 * Scale the images and segmentation masks so that the shorter edge size equals 224.
 * Convert the captions to lists of word indices according to the vocabulary indexing.
 * Structure the images and segmentation masks in the following way:
+'''
   DATA_ROOT
     annotations_224
       train2017
@@ -25,6 +26,8 @@
         *.png
       val2017
         *.png
+'''
+
 Helper functions can be found in data_preprocess.py.
 
 ## Training
