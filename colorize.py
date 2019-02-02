@@ -197,8 +197,7 @@ def _replace_color(caps, lens, color_set, color_list):
     return caps
 
 
-def colorize
-_segcoco_with_cap(
+def colorize_segcoco_with_cap(
     net, 
     as_rgb, 
     total=10000, 
