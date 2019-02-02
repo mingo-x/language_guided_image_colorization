@@ -5,6 +5,9 @@ import random
 
 
 def prepare_data(total=50, group_size=11, mode=0, with_test=False):
+    '''
+    Randomly select images for evaluation.
+    '''
     gray_list = pickle.load(open('/srv/glusterfs/xieya/data/coco_seg/val_filtered_gray.p', 'rb'))
     gray_pattern = 'https://s3.eu-central-1.amazonaws.com/imagecolorization/gray/{}.jpg'
     gt_pattern = 'https://s3.eu-central-1.amazonaws.com/imagecolorization/segcap_21/{}.jpg'  # 0
@@ -55,6 +58,9 @@ def prepare_data(total=50, group_size=11, mode=0, with_test=False):
 
 
 def calculate_score(group_size=11):
+    '''
+    Calculate the preference rate from the annotation results.
+    '''
     with open('data/amt_data_5_res.csv', 'r') as flabel, open('data/amt_data_5.csv', 'r') as fdata:
         label_reader = csv.reader(flabel, delimiter=',')
         data_reader = csv.reader(fdata, delimiter=',')
@@ -80,6 +86,10 @@ def calculate_score(group_size=11):
 
 
 def replace_model(old, new):
+    '''
+    Replace the model id in the previously generated evaluation image list, 
+    so as to assure that we use the same set of images when comparing different models.
+    '''
     cnt = 0
     with open('data/amt_data_3.csv', 'r') as fin, open('data/amt_data_5.csv', 'w', newline='') as fout:
         csv_reader = csv.reader(fin, delimiter=',')
@@ -96,6 +106,7 @@ def replace_model(old, new):
                 new_row.append(cell)
             csv_writer.writerow(new_row)
         print(cnt)
+
 
 def get_ids():
     ids = []
