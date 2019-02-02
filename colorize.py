@@ -78,7 +78,7 @@ def colorize_imgnet(net, total=10000, batch_size=1, eval_metrics=False, file_lis
     img_count = 0
 
     if with_cap:
-        train_vocab = pickle.load(open('/srv/glusterfs/xieya/data/language/vocabulary.p', 'r'))
+        train_vocab = pickle.load(open(args.vocabulary_path, 'r'))
 
     fin = open(file_list, 'r')
     for data_dict, targets in val_generator:
@@ -134,7 +134,7 @@ def colorize_imgnet(net, total=10000, batch_size=1, eval_metrics=False, file_lis
 
 
 def colorize_segcoco(net, as_rgb, total=10000, batch_size=4, eval_metrics=False, save=True):
-    test_dataset = CocoStuff164k(root='/srv/glusterfs/xieya/data/coco_seg/', split='val2017', as_rgb=as_rgb, random_crop=False, with_seg=False, return_gt=eval_metrics, with_cap=True)
+    test_dataset = CocoStuff164k(root=args.data_root, split='val2017', as_rgb=as_rgb, random_crop=False, with_seg=False, return_gt=eval_metrics, with_cap=True)
     test_generator = data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True, drop_last=False)
     img_count = 0
     if not os.path.exists(_OUT_DIR): 
@@ -211,7 +211,7 @@ def colorize_segcoco_with_cap(
 ):
     print('Colorizing with captions')
     test_dataset = CocoStuff164k(
-        root='/srv/glusterfs/xieya/data/coco_seg/', 
+        root=args.data_root, 
         split='val2017', 
         as_rgb=as_rgb, 
         with_cap=True, 
@@ -225,7 +225,7 @@ def colorize_segcoco_with_cap(
     )
     test_generator = data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True, drop_last=False)
     if with_combined_dict:
-        train_vocab = pickle.load(open('/srv/glusterfs/xieya/data/language/vocabulary.p', 'r'))
+        train_vocab = pickle.load(open(args.vocabulary_path, 'r'))
     elif with_vg:
         train_vocab = pickle.load(open('/srv/glusterfs/xieya/data/visual_genome/vocabulary.p', 'r'))
     else:
@@ -233,7 +233,7 @@ def colorize_segcoco_with_cap(
     if random_cap:
         color_sub_list = ['red', 'green', 'blue', 'yellow', 'orange', 'purple', 'pink', 'brown', 'black', 'white']
         color_sub_list = [train_vocab[c] for c in color_sub_list]
-        color_voc = pickle.load(open('/srv/glusterfs/xieya/data/color/vocabulary.p', 'rb'))
+        color_voc = pickle.load(open(args.color_vocabulary_path, 'rb'))
         color_set = set()
         for c in color_voc:
             if c in train_vocab:
@@ -241,7 +241,7 @@ def colorize_segcoco_with_cap(
     vrev = dict((v, k) for (k, v) in train_vocab.iteritems())  
     if with_seg:
         seg_label_prior = Variable(torch.from_numpy(
-            utils.prior_boosting('/srv/glusterfs/xieya/prior/label_probs.npy', 1., .5)).float().cuda())
+            utils.prior_boosting('resources/label_probs.npy', 1., .5)).float().cuda())
     img_count = 0
     if not os.path.exists(_OUT_DIR): 
         os.makedirs(_OUT_DIR)
@@ -298,16 +298,6 @@ def colorize_segcoco_with_cap(
                 words = '_'.join(vrev.get(w, 'unk') for w in word_list)
                 if save:
                     io.imsave(os.path.join(_OUT_DIR, '{}.jpg'.format(img_count, words)), img_dec)
-                    # io.imsave(os.path.join(_OUT_DIR, '{}.jpg'.format(img_count)), color.rgb2gray(img_dec))
-                    # io.imsave(os.path.join(_OUT_DIR, '{}.jpg'.format(img_count)), gt_rgbs[i])
-                    # io.imsave(os.path.join(_OUT_DIR, '{}_l.jpg'.format(img_count, words)), labels[i])
-                    # for k in xrange(len(attentions)):
-                    #     att = attentions[k]
-                    #     if att is not None:
-                    #         a = att[i].data.cpu().numpy()
-                    #         a = utils.normalize(a)
-                    #         plt.imsave(os.path.join(_OUT_DIR, '{}_o_{}_a{}.png'.format(img_count, words, k)), a)
-                # cv2.imwrite(os.path.join(_OUT_DIR, '{}_gt.jpg'.format(img_count)), gts[i])
                 if eval_metrics:
                     psnrs.append(_psnr(gt_rgbs[i], img_dec))
                 print(img_count)
@@ -355,7 +345,7 @@ def colorize_segcoco_with_cap(
 
 
 def colorize_video(net):
-    train_vocab = pickle.load(open('/srv/glusterfs/xieya/data/language/vocabulary.p', 'r'))
+    train_vocab = pickle.load(open(args.vocabulary_path, 'r'))
     caption = raw_input('Caption?')
     caption_words = caption.strip().split(' ')
     folder_name = '_'.join(caption_words)
@@ -421,12 +411,13 @@ def net_and_decode(net, img_lab, input_im, input_caption, input_caption_len):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='resnet coco colorization')
+    parser.add_argument('--color_vocabulary_path', default='/srv/glusterfs/xieya/data/color/vocabulary.p', help='Path to color vocabulary file.')
     parser.add_argument('--gpuid', '-g', default='0', type=str, help='which gpu to use')
     parser.add_argument('--d_emb', default=300, type=int, help='word-embedding dimension')
+    parser.add_argument('--embedding_path', default='/srv/glusterfs/xieya/data/language/embedding.p', help='Path to word embedding file.')
     parser.add_argument('--eval', '-e', default=0, type=int, help='Evaluate metrics.')
-    parser.add_argument('--h5_file', default='/srv/glusterfs/xieya/data/coco_colors.h5', help='h5 file which contains everything except features')
-    parser.add_argument('--features_file', default='/srv/glusterfs/xieya/data/coco_features.h5', help='h5 file which contains features')
-    parser.add_argument('--vocab_file_name', default='resources/coco_colors_vocab.p', help='vocabulary file')
+    parser.add_argument('--vocabulary_path', default='/srv/glusterfs/xieya/data/language/vocabulary.p', help='Path to vocabulary file.')
+    parser.add_argument('--data_root', default='/srv/glusterfs/xieya/data/coco_seg/', help='Root directory of training data.')
     parser.add_argument('--image_save_folder', '-d', default='', help='prefix of the folders where images are stored')
     parser.add_argument('--model', '-m', default=0, type=int, help='0: vgg+attention')
     parser.add_argument('--weights', '-w', default='', type=str, help='Pretrained weights.')
@@ -447,28 +438,13 @@ if __name__ == '__main__':
     torch.backends.cudnn.benchmark = True
 
     if args.image_save_folder != '':
-        _OUT_DIR = '/srv/glusterfs/xieya/image/color/' + args.image_save_folder        
+        _OUT_DIR = args.image_save_folder        
 
     # initialize quantized LAB encoder
     lookup_enc = utils.LookupEncode('resources/ab_grid.npy')
     num_classes = lookup_enc.cc.shape[0]
     cuda_cc = Variable(torch.from_numpy(lookup_enc.cc).float().cuda())
 
-    # if not args.video:
-    #     hfile = args.h5_file
-    #     hf = h5.File(hfile, 'r')
-    # features_file = args.features_file
-    # ff = h5.File(features_file, 'r')
-
-    # vrev = dict((v, k) for (k, v) in train_vocab.iteritems())          
-    # n_vocab = len(train_vocab)
-
-    # if args.vgg:
-    #     print("Using VGG structure.")
-    #     net = AutocolorizeVGG(n_vocab, train_vocab_embeddings=train_vocab_embeddings)
-    # else:
-    #     print("Using ResNet structure.")
-    #     net = AutocolorizeResnet(n_vocab, train_vocab_embeddings=train_vocab_embeddings)  # leave other stuff at default values
     caption_encoder_version = 'gru' if args.gru == 1 else 'lstm'
     with_seg = args.model in [1, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     with_cap = args.model in [2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -476,7 +452,7 @@ if __name__ == '__main__':
     with_vg = args.language_ver in [1, 3]
     if with_cap:
         if with_combined_dict:
-            train_vocab_embeddings = pickle.load(open('/srv/glusterfs/xieya/data/language/embedding.p', 'rb'))
+            train_vocab_embeddings = pickle.load(open(args.embedding_path, 'rb'))
         elif with_vg:
             train_vocab_embeddings = pickle.load(open('/srv/glusterfs/xieya/data/visual_genome/embedding.p', 'rb'))
         else:
@@ -574,18 +550,3 @@ if __name__ == '__main__':
             with_seg=with_seg,
             without_gray=without_gray,
         )
-                                    
-    # if not args.video:
-    #     val_origs = hf['val_ims']                                                     
-    #     val_words = hf['val_words']                                             
-    #     val_lengths = hf['val_length']                                         
-    # val_ims = ff['val_features']
-                                 
-    # if args.video:
-    #     colorize_video(net)
-    # else:                                                                                         
-    #     img_save_folder = args.image_save_folder
-    #     if not os.path.exists(img_save_folder): 
-    #         os.makedirs(img_save_folder)                                                                                                                  
-
-    #     colorize(net)

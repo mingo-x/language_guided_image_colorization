@@ -242,7 +242,7 @@ class CocoStuff164k(_CocoStuff):
         if self.with_cap:
             cap_list = self.im2cap[image_id]
             if self.random_cap:
-                # Randomly pick one cap for the image.`
+                # Randomly pick one cap for the image.
                 if self.with_empty_cap:
                     cap_list *= 3
                     cap_list += [-1]
