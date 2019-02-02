@@ -197,7 +197,8 @@ def _replace_color(caps, lens, color_set, color_list):
     return caps
 
 
-def colorize_segcoco_with_cap(
+def colorize
+_segcoco_with_cap(
     net, 
     as_rgb, 
     total=10000, 
@@ -322,15 +323,6 @@ def colorize_segcoco_with_cap(
                     new_img_dec = img_as_ubyte(color.lab2rgb(np.dstack((ls[i], new_AB_val))))
                     new_words = '_'.join(new_caption)
                     io.imsave(os.path.join(_OUT_DIR, '{}_n_{}.jpg'.format(img_count, new_words)), new_img_dec)
-                    # for k in xrange(len(new_attentions)):
-                    #     new_att = new_attentions[k]
-                    #     if new_att is not None:
-                    #         a = new_att[0].data.cpu().numpy()
-                    #         a = utils.normalize(a)
-                    #         plt.imsave(os.path.join(_OUT_DIR, '{}_n_{}_a{}.png'.format(img_count, new_words, k)), a)
-                    # new_a3 = new_a3[0, 0].data.cpu().numpy()
-                    # new_a3 = _normalize(new_a3)
-                    # io.imsave(os.path.join(_OUT_DIR, '{}_n_{}_a3.jpg'.format(img_count, new_words)), new_a3)
 
             if img_count == total:
                 break
@@ -412,12 +404,11 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='resnet coco colorization')
     parser.add_argument('--color_vocabulary_path', default='/srv/glusterfs/xieya/data/color/vocabulary.p', help='Path to color vocabulary file.')
-    parser.add_argument('--gpuid', '-g', default='0', type=str, help='which gpu to use')
-    parser.add_argument('--d_emb', default=300, type=int, help='word-embedding dimension')
+    parser.add_argument('--d_emb', default=300, type=int, help='Word-embedding dimension')
+    parser.add_argument('--data_root', default='/srv/glusterfs/xieya/data/coco_seg/', help='Root directory of training data.')
     parser.add_argument('--embedding_path', default='/srv/glusterfs/xieya/data/language/embedding.p', help='Path to word embedding file.')
     parser.add_argument('--eval', '-e', default=0, type=int, help='Evaluate metrics.')
-    parser.add_argument('--vocabulary_path', default='/srv/glusterfs/xieya/data/language/vocabulary.p', help='Path to vocabulary file.')
-    parser.add_argument('--data_root', default='/srv/glusterfs/xieya/data/coco_seg/', help='Root directory of training data.')
+    parser.add_argument('--gpuid', '-g', default='0', type=str, help='Which gpu to use.')
     parser.add_argument('--image_save_folder', '-d', default='', help='prefix of the folders where images are stored')
     parser.add_argument('--model', '-m', default=0, type=int, help='0: vgg+attention')
     parser.add_argument('--weights', '-w', default='', type=str, help='Pretrained weights.')
@@ -430,15 +421,17 @@ if __name__ == '__main__':
     parser.add_argument('--save', '-s', default=1, type=int, help='Save or not.')
     parser.add_argument('--language_ver', '-l', default=0, type=int, help='0: new coco, 1: new vg, 2: old coco, 3: old vg')
     parser.add_argument('--skip', default=0, type=int, help='Skip.')
-    parser.add_argument('--random_cap', default=0, type=int, help='Random cap')
+    parser.add_argument('--random_cap', default=0, type=int, help='Colorize with randomly generated caption.')
     parser.add_argument('--without_gray', default=0, type=int, help='Without gray')
+    parser.add_argument('--vocabulary_path', default='/srv/glusterfs/xieya/data/language/vocabulary.p', help='Path to vocabulary file.')
 
     args = parser.parse_args()
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpuid
     torch.backends.cudnn.benchmark = True
 
     if args.image_save_folder != '':
-        _OUT_DIR = args.image_save_folder        
+        _OUT_DIR = args.image_save_folder      
+    print("Output directory:", _OUT_DIR)  
 
     # initialize quantized LAB encoder
     lookup_enc = utils.LookupEncode('resources/ab_grid.npy')
