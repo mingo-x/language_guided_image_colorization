@@ -13,8 +13,7 @@
 ## Results
 
 ## Pretrained Model
-@TODO: Add download link
-* Our full method: 
+Download the pretrained weights for the full method [here](https://drive.google.com/open?id=1LGqmmiUok_Gwhvq0z5DYClOalLigMQQG)
 
 ## Acknowledgement
 @TODO: Add repos
