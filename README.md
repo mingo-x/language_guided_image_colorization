@@ -51,7 +51,7 @@ Helper functions for the evaluation on the AMT platform can be found in _amt.py_
 Set _\_GT\_DIR_ and _\_INFERENCE\_DIR_ in _evaluate.py_ and run. You may want to overwrite the _resources/val_filtered_gray.p_ file if you use different image datasets.
 
 ## Pretrained Model
-Download the pretrained weights for the full method [here](https://drive.google.com/open?id=1o_avtX8iE9F-B78c4ypDKIYyJ2I6QESL).
+Download the pretrained weights for our full method [here](https://drive.google.com/open?id=1o_avtX8iE9F-B78c4ypDKIYyJ2I6QESL).
 
 ## Acknowledgement
 * [COCO-Stuff](https://github.com/nightrome/cocostuff)
