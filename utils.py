@@ -61,23 +61,13 @@ def prior_boosting(prior_file, alpha, gamma):
     prior_factor[prior_factor == np.inf] = 0.  # mask out unused classes
     prior_factor = prior_factor / np.sum(prior_probs * prior_factor)  # re-normalize
 
-    # implied empirical prior
-    # implied_prior = prior_probs*prior_factor
-    # implied_prior = implied_prior/np.sum(implied_prior) # re-normalize
     return prior_factor
 
 
-def na(): # shorthand for new axis
-    return np.newaxis
-
-
 def flatten_nd_array(pts_nd,axis=1):
-    ''' Flatten an nd array into a 2d array with a certain axis
-    INPUTS
-        pts_nd       N0xN1x...xNd array
-        axis         integer
-    OUTPUTS
-        pts_flt     prod(N \ N_axis) x N_axis array     '''
+    ''' 
+    https://github.com/superhans/colorfromlanguage
+    '''
     NDIM = pts_nd.ndim
     SHP = np.array(pts_nd.shape)
     nax = np.setdiff1d(np.arange(0,NDIM),np.array((axis))) # non axis indices
@@ -89,14 +79,9 @@ def flatten_nd_array(pts_nd,axis=1):
 
 
 def unflatten_2d_array(pts_flt,pts_nd,axis=1,squeeze=False):
-    ''' Unflatten a 2d array with a certain axis
-    INPUTS
-        pts_flt     prod(N \ N_axis) x M array
-        pts_nd      N0xN1x...xNd array
-        axis        integer
-        squeeze     bool     if true, M=1, squeeze it out
-    OUTPUTS
-        pts_out     N0xN1x...xNd array        '''
+    '''
+    https://github.com/superhans/colorfromlanguage
+    '''
     NDIM = pts_nd.ndim
     SHP = np.array(pts_nd.shape)
     nax = np.setdiff1d(np.arange(0,NDIM),np.array((axis))) # non axis indices
@@ -195,12 +180,12 @@ class NNEncode():
         else:
             self.alreadyUsed = True
             self.pts_enc_flt = np.zeros((P, self.K))
-            self.p_inds = np.arange(0, P, dtype='int')[:, na()]
+            self.p_inds = np.arange(0, P, dtype='int')[:, np.newaxis]
 
         (dists, inds) = self.nbrs.kneighbors(pts_flt)
 
         wts = np.exp(-dists**2 / (2 * self.sigma**2))
-        wts = wts / np.sum(wts, axis=1)[:, na()]
+        wts = wts / np.sum(wts, axis=1)[:, np.newaxis]
 
         self.pts_enc_flt[self.p_inds, inds] = wts
         pts_enc_nd = unflatten_2d_array(self.pts_enc_flt, pts_nd, axis=axis)

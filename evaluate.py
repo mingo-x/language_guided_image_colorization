@@ -8,7 +8,8 @@ import utils
 
 _AUC_THRESHOLD = 150
 _GT_DIR = '/srv/glusterfs/xieya/image/color/gt'
-_PRIOR_PATH = '/srv/glusterfs/xieya/prior/coco2017_313_soft.npy'
+_INFERENCE_DIR = '/srv/glusterfs/xieya/image/color/e4'
+_PRIOR_PATH = 'resources/coco2017_313_soft.npy'
 _LOOKUP = utils.LookupEncode('resources/ab_grid.npy')
 _LOG_FREQ = 100
 
@@ -78,7 +79,7 @@ def evaluate_from_rgb(in_dir, without_gray=False):
     img_count = 0
 
     if without_gray:
-        gray_list = pickle.load(open('/srv/glusterfs/xieya/data/coco_seg/val_filtered_gray.p', 'rb'))
+        gray_list = pickle.load(open('resources/val_filtered_gray.p', 'rb'))
 
     for img_id in xrange(1, 2487):
         if without_gray and img_id in gray_list:
@@ -109,12 +110,9 @@ def evaluate_from_rgb(in_dir, without_gray=False):
         psnr_rgb_score = _psnr(gt_rgb, img_rgb)
         psnr_rgb_scores.append(psnr_rgb_score)
 
-        # summary = '{0}\t{1}\t{2}\t{3}\t{4}\n'.format(img_id, auc_score, auc_rb_0_score, auc_rb_5_score, np.sqrt(mse_ab_score))
-        # print(summary)
         img_count += 1
         if img_count % _LOG_FREQ == 0:
             print(img_count)
-            # fout.flush()
 
     l2_accs = np.asarray(l2_accs)
     prior_0_weights = np.asarray(prior_0_weights)
@@ -147,4 +145,4 @@ def evaluate_from_rgb(in_dir, without_gray=False):
 
 
 if __name__ == '__main__':
-    evaluate_from_rgb('/srv/glusterfs/xieya/image/color/e4', without_gray=True)
+    evaluate_from_rgb(_INFERENCE_DIR, without_gray=True)

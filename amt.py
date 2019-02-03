@@ -8,7 +8,7 @@ def prepare_data(total=50, group_size=11, mode=0, with_test=False):
     '''
     Randomly select images for evaluation.
     '''
-    gray_list = pickle.load(open('/srv/glusterfs/xieya/data/coco_seg/val_filtered_gray.p', 'rb'))
+    gray_list = pickle.load(open('resources/val_filtered_gray.p', 'rb'))
     gray_pattern = 'https://s3.eu-central-1.amazonaws.com/imagecolorization/gray/{}.jpg'
     gt_pattern = 'https://s3.eu-central-1.amazonaws.com/imagecolorization/segcap_21/{}.jpg'  # 0
     if mode == 0:  # CIC v.s. gt

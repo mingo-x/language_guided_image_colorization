@@ -38,7 +38,7 @@ class _CocoStuff(data.Dataset):
         with_vg=False,
         old_coco=False,
         with_cap_filter=False,
-        without_gray=False,  # If use without_gray, please generate a file of the non-gray image list.
+        without_gray=False,
     ):
         self.root = root
         self.split = split
@@ -56,7 +56,7 @@ class _CocoStuff(data.Dataset):
         self.without_gray = without_gray
 
         if self.without_gray:
-            self.gray_list = pickle.load(open('/srv/glusterfs/xieya/data/coco_seg/val_filtered_gray.p', 'rb'))
+            self.gray_list = pickle.load(open('resources/val_filtered_gray.p', 'rb'))
         self.files = []
         self.ignore_label = None
         if self.as_rgb:

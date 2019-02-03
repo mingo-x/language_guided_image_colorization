@@ -69,19 +69,6 @@ class CaptionEncoderGRU(nn.Module):
 
 
 class FiLM(nn.Module):
-    """
-    A Feature-wise Linear Modulation Layer from
-    'FiLM: Visual Reasoning with a General Conditioning Layer'
-
-    How this layer works : 
-    x = Variable(torch.randn(2, 64, 32 ,32))       
-    gammas = Variable(torch.randn(2, 64)) # gammas and betas have to be 64 
-    betas = Variable(torch.randn(2, 64))           
-    y = film(x, gammas, betas)
-    print y.size()
-    y is : [2, 64, 32, 32]
- 
-    """
     def forward(self, x, gammas, betas):
         gammas = gammas.unsqueeze(2).unsqueeze(3).expand_as(x)
         betas = betas.unsqueeze(2).unsqueeze(3).expand_as(x)
