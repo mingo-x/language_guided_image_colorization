@@ -3,14 +3,14 @@
 ## Data Preparation & Set-up
 ### Data sources
 * Image: COCO 2017 train/test split
-* Language: COCO 2015 captioning challenge
+* Language: COCO 2015 captioning challenge or use our preprocessed caption data: [im2cap.p](), [captions.npy](), [caption_lengths.npy]()
 * Segmentation: [COCO-Stuff dataset](https://github.com/nightrome/cocostuff)
 * Word embedding: [download](https://drive.google.com/open?id=1mRm68FDYak732h_bpaTIKyAt2Tvoke7x)
 * Vocabulary indexing: [download](https://drive.google.com/open?id=1lHcJkbuNgrTU8zWw1DNbJhSMeGBg8n4x)
 * Color vocabulary: [download](https://drive.google.com/open?id=1gD4-ItPIN2fL_y1VVsrT6Sd07Fkjir_s)
 ### Data pre-processing
 * Scale the images and segmentation masks so that the shorter edge size equals 224.
-* Convert the captions to lists of word indices according to the vocabulary indexing.
+* Convert the captions to lists of word indices according to the vocabulary indexing or use our preprocessed caption data, and set _\_IM2CAP\_PATH_, _\_CAPTIONS|_PATH_, _\_CAPTION\_LENGTHS\_PATH_ in _datasets.py_ to the corresponding file locations.
 * Structure the images and segmentation masks in the following way:
 ```
   DATA_ROOT
@@ -33,7 +33,7 @@ Helper functions can be found in data_preprocess.py.
 ## Inference
 Sample command (for our full method):
 ```
-python -u colorize.py -g GPU_ID -d OUTPUT_DIR -m 10 --gru 0 --seg_ver 0 --weights PATH_TO_WEIGHTS
+python -u colorize.py -g GPU_ID -d OUTPUT_DIR -m 10 --gru 0 --seg_ver 0 --weights PATH_TO_WEIGHTS --data_root DATA_ROOT --embedding_path PATH_TO_WORD_EMBEDDING --vocabulary_path PATH_TO_VOCABULARY
 ```
 More detailed usage of the arguments can be found in colorize.py.
 
@@ -44,8 +44,7 @@ Helper functions for the evaluation on the AMT platform can be found in amt.py.
 
 
 ## Pretrained Model
-Download the pretrained weights for the full method [here](https://drive.google.com/open?id=1LGqmmiUok_Gwhvq0z5DYClOalLigMQQG).
-@TODO: update.
+Download the pretrained weights for the full method [here](https://drive.google.com/open?id=1o_avtX8iE9F-B78c4ypDKIYyJ2I6QESL).
 
 ## Acknowledgement
 * [COCO-Stuff](https://github.com/nightrome/cocostuff)
