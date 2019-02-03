@@ -3,7 +3,7 @@
 ## Data Preparation & Set-up
 ### Data sources
 * Image: COCO 2017 train/test split
-* Language: COCO 2015 captioning challenge or use our preprocessed caption data: [im2cap.p](https://drive.google.com/open?id=1J1UHKf2udKdyf6aozt-0ukKzI0u4bpKT), [captions.npy](https://drive.google.com/open?id=1qfvcldN3lR9kDQn43vTmQWHisPNq7Hux), [caption_lengths.npy](https://drive.google.com/open?id=1bUMJYCRXcrPaUtwpgz_dNsA7LKhDzIJn)
+* Language: COCO 2015 captioning challenge, or use our preprocessed caption data: [im2cap.p](https://drive.google.com/open?id=1J1UHKf2udKdyf6aozt-0ukKzI0u4bpKT), [captions.npy](https://drive.google.com/open?id=1qfvcldN3lR9kDQn43vTmQWHisPNq7Hux), [caption_lengths.npy](https://drive.google.com/open?id=1bUMJYCRXcrPaUtwpgz_dNsA7LKhDzIJn)
 * Segmentation: [COCO-Stuff dataset](https://github.com/nightrome/cocostuff)
 * Word embedding: [download](https://drive.google.com/open?id=1mRm68FDYak732h_bpaTIKyAt2Tvoke7x)
 * Vocabulary indexing: [download](https://drive.google.com/open?id=1lHcJkbuNgrTU8zWw1DNbJhSMeGBg8n4x)
