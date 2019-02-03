@@ -1293,24 +1293,27 @@ def _scalar_summary(tag, value):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='resnet coco colorization')
-    parser.add_argument('--lr', default=0.001, type=float, help='learning rate')
-    parser.add_argument('--start-epoch', '-se', type=int, default=0, help='starting epoch')
-    parser.add_argument('--end-epoch', '-ee', type=int, default=30, help='ending epoch')
-    parser.add_argument('--gpuid', '-g', default='0', type=str, help='which gpu to use')
-    parser.add_argument('--batch_size', '-b', default=32, type=int, help='batch size')
-    parser.add_argument('--model', '-m', default=0, type=int, help='Model type.')
-    parser.add_argument('--model_save_folder', '-d', default='/srv/glusterfs/xieya/tmp/', help='prefix of the model save file')
-    parser.add_argument('--nclasses', '-nc', type=int, default=313, help='Number of classes.')
-    parser.add_argument('--grid_file', default='resources/ab_grid.npy', type=str, help='Grid file.')
-    parser.add_argument('--weights', default='', type=str, help='Pretrained weights.')
-    parser.add_argument('--pre_weights', '-p', default='', type=str, help='Pretrained weights.')
-    parser.add_argument('--weight_decay', '-wd', default=1e-5, type=float, help='Weight decay parameter.')
-    parser.add_argument('--decay', default=0, type=int, help='Decay at current epoch.')
-    parser.add_argument('--seg_ver', default=0, type=int, help='SegNet version.')
-    parser.add_argument('--empty_cap', default=0, type=int, help='With empty cap.')
-    parser.add_argument('--gru', default=1, type=int, help='Use GRU or BiLSTM.')
-    parser.add_argument('--vg', default=0, type=int, help='Use regions from visual genome.')
+    parser.add_argument('--batch_size', '-b', default=32, type=int, help='Batch size')
+    parser.add_argument('--data_root', default='/scratch/xieya', help='Root directory of training/testing data.')
+    parser.add_argument('--decay', default=0, type=int, help='Learning rate decay at current epoch.')
     parser.add_argument('--dropout', default=0.2, type=float, help='Embedding dropout.')
+    parser.add_argument('--embedding_path', default='/srv/glusterfs/xieya/data/language/embedding.p', help='Path to word embedding file.')
+    parser.add_argument('--empty_cap', default=0, type=int, help='With empty cap.')
+    parser.add_argument('--end-epoch', '-ee', type=int, default=30, help='Ending epoch')
+    parser.add_argument('--gpuid', '-g', default='0', type=str, help='Which gpu to use')
+    parser.add_argument('--grid_file', default='resources/ab_grid.npy', type=str, help='Color grid file.')
+    parser.add_argument('--gru', default=1, type=int, help='Use GRU or BiLSTM.')
+    parser.add_argument('--lr', default=0.001, type=float, help='Learning rate')
+    parser.add_argument('--model', '-m', default=0, type=int, help='Model type.')
+    parser.add_argument('--model_save_folder', '-d', default='/srv/glusterfs/xieya/tmp/', help='Training output folder.')
+    parser.add_argument('--nclasses', '-nc', type=int, default=313, help='Number of color classes.')
+    parser.add_argument('--pre_weights', '-p', default='', type=str, help='Pretrained weights.')
+    parser.add_argument('--seg_ver', default=0, type=int, help='SegNet version.')
+    parser.add_argument('--start-epoch', '-se', type=int, default=0, help='Starting epoch')
+    parser.add_argument('--vg', default=0, type=int, help='Use regions from visual genome.')
+    parser.add_argument('--vocabulary_path', default='/srv/glusterfs/xieya/data/language/vocabulary.p', help='Path to vocabulary file.')
+    parser.add_argument('--weights', default='', type=str, help='Pretrained weights.')
+    parser.add_argument('--weight_decay', '-wd', default=1e-5, type=float, help='Weight decay parameter.')
 
     args = parser.parse_args()
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpuid
@@ -1331,8 +1334,8 @@ if __name__ == '__main__':
     if with_cap:
         caption_encoder_version = 'gru' if args.gru == 1 else 'lstm'
         caption_encoder_dropout = args.dropout
-        train_vocab = pickle.load(open('/srv/glusterfs/xieya/data/language/vocabulary.p', 'r'))
-        train_vocab_embeddings = pickle.load(open('/srv/glusterfs/xieya/data/language/embedding.p', 'rb'))
+        train_vocab = pickle.load(open(args.vocabulary_path, 'r'))
+        train_vocab_embeddings = pickle.load(open(args.embedding_path, 'rb'))
         # if with_vg:
         #     train_vocab = pickle.load(open('/srv/glusterfs/xieya/data/visual_genome/vocabulary.p', 'r'))
         #     train_vocab_embeddings = pickle.load(open('/srv/glusterfs/xieya/data/visual_genome/embedding.p', 'rb'))
@@ -1510,7 +1513,7 @@ if __name__ == '__main__':
     if with_vg:
         print('Visual genome')
     train_dataset = CocoStuff164k(
-        root='/scratch/xieya', 
+        root=args.data_root, 
         split='train2017', 
         as_rgb=input_as_rgb, 
         with_cap=with_cap, 
@@ -1520,7 +1523,7 @@ if __name__ == '__main__':
         with_cap_filter=with_cap_filter,
     )
     val_dataset = CocoStuff164k(
-        root='/scratch/xieya', 
+        root=args.data_root, 
         split='val2017', 
         as_rgb=input_as_rgb, 
         with_cap=with_cap, 
@@ -1537,7 +1540,7 @@ if __name__ == '__main__':
     alpha = 1.
     gamma = 0.5
     seg_label_prior = Variable(torch.from_numpy(
-        utils.prior_boosting('/srv/glusterfs/xieya/prior/label_probs.npy', alpha, gamma)).float().cuda())
+        utils.prior_boosting('resources/label_probs.npy', alpha, gamma)).float().cuda())
                                                                                       
     img_save_folder = args.model_save_folder
     if not os.path.exists(img_save_folder):

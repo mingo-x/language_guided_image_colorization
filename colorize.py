@@ -405,7 +405,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', '-b', default=16, type=int, help='Inference batch size.')
     parser.add_argument('--color_vocabulary_path', default='/srv/glusterfs/xieya/data/color/vocabulary.p', help='Path to color vocabulary file.')
     parser.add_argument('--d_emb', default=300, type=int, help='Word-embedding dimension')
-    parser.add_argument('--data_root', default='/srv/glusterfs/xieya/data/coco_seg/', help='Root directory of training data.')
+    parser.add_argument('--data_root', default='/srv/glusterfs/xieya/data/coco_seg/', help='Root directory of training/testing data.')
     parser.add_argument('--deoldify', default=0, type=int, help='Colorize deoldify pictures.')
     parser.add_argument('--embedding_path', default='/srv/glusterfs/xieya/data/language/embedding.p', help='Path to word embedding file.')
     parser.add_argument('--eval', '-e', default=0, type=int, help='Evaluate metrics.')
