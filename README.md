@@ -46,7 +46,7 @@ More detailed usage of the arguments can be found in _colorize.py_.
 
 ## Evaluation
 ### AMT
-Helper functions for the evaluation on the AMT platform can be found in amt.py.
+Helper functions for the evaluation on the AMT platform can be found in _amt.py_.
 ### Reference Metrics
 Set _\_GT\_DIR_ and _\_INFERENCE\_DIR_ in _evaluate.py_ and run. You may want to overwrite the _resources/val_filtered_gray.p_ file if you use different image datasets.
 
