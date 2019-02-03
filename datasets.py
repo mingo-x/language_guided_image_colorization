@@ -5,15 +5,19 @@ import numpy as np
 import os
 import pickle
 import random
-from skimage import color, img_as_ubyte, io, transform
+from skimage import color, img_as_ubyte, transform
 import torchvision.transforms as transforms
 import torch.utils.data as data
 import utils
 
 '''
-https://github.com/kazuto1011/deeplab-pytorch
+Based on https://github.com/kazuto1011/deeplab-pytorch.
 '''
 
+# Data path
+_IM2CAP_PATH = '/srv/glusterfs/xieya/data/coco_seg/im2cap_comb.p'
+_CAPTIONS_PATH = '/srv/glusterfs/xieya/data/coco_seg/annotations/captions_comb.npy'
+_CAPTION_LENGTHS_PATH = '/srv/glusterfs/xieya/data/coco_seg/annotations/caption_lengths_comb.npy'
 
 class _CocoStuff(data.Dataset):
     """COCO-Stuff base class"""
@@ -34,7 +38,7 @@ class _CocoStuff(data.Dataset):
         with_vg=False,
         old_coco=False,
         with_cap_filter=False,
-        without_gray=False,
+        without_gray=False,  # If use without_gray, please generate a file of the non-gray image list.
     ):
         self.root = root
         self.split = split
@@ -68,15 +72,15 @@ class _CocoStuff(data.Dataset):
                     self.caps = np.load('/srv/glusterfs/xieya/data/coco_seg/annotations/captions.npy')
                     self.lens = np.load('/srv/glusterfs/xieya/data/coco_seg/annotations/caption_lengths.npy')
                 else:
-                    self.im2cap = pickle.load(open('/srv/glusterfs/xieya/data/coco_seg/im2cap_comb.p', 'rb'))
-                    self.caps = np.load('/srv/glusterfs/xieya/data/coco_seg/annotations/captions_comb.npy')
-                    self.lens = np.load('/srv/glusterfs/xieya/data/coco_seg/annotations/caption_lengths_comb.npy')
+                    self.im2cap = pickle.load(open(_IM2CAP_PATH, 'rb'))
+                    self.caps = np.load(_CAPTIONS_PATH)
+                    self.lens = np.load(_CAPTION_LENGTHS_PATH)
             self.random_cap = random_cap
 
         grid_file = 'resources/ab_grid.npy'
         self.lookup_enc = utils.LookupEncode(grid_file)
         self.nn_enc = utils.NNEncode(10, 5., km_filepath=grid_file) 
-        self.color_prior = utils.prior_boosting('/srv/glusterfs/xieya/prior/coco2017_313_soft.npy', 1., .5)
+        self.color_prior = utils.prior_boosting('resources/coco2017_313_soft.npy', 1., .5)
 
         self._set_files()
         
